@@ -1,0 +1,21 @@
+{
+  "name": "makao-subgraph-ipfs",
+  "version": "0.1.0",
+  "description": "Subgraph pour indexer les marchés Makao",
+  "main": "index.js",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz",
+    "deploy-prod": "graph deploy makao-subgraph --version-label prod-$(date +%Y%m%d-%H%M%S) --node https://subgraphs.alchemy.com/api/subgraphs/deploy --deploy-key YOUR_DEPLOY_KEY --ipfs https://ipfs.satsuma.xyz"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@graphprotocol/graph-ts": "^0.38.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

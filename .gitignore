@@ -1,0 +1,82 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm/
+
+# Optional REPL history
+.node_repl_history
+
+# dotenv environment variables file
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Directory for compiled output
+dist/
+build/
+
+# Coverage directory
+coverage/
+
+# TypeScrip cache
+*.tsbuildinfo
+
+# Editor directories and files
+.vscode/
+.idea/
+.DS_Store
+
+# Thumbnails
+.thumbnails/
+
+# OS generated files
+.DS_Store
+.Trashes
+Thumbs.db
+
+# Misc
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Mac specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
+Desktop.ini
+
+# Linux specific
+.directory
+
+# Yarn
+yarn-error.log
+.yarn/
+
+# NVM
+.nvmrc
+
+# VS Code
+.vscode/
+
+# Subgraph specific
+build/
+generated/
