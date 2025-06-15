@@ -49,8 +49,8 @@ Créez la structure de dossiers suivante pour votre projet de subgraph [^5][^6]:
 ```
 makao-subgraph/
 ├── abis/                      # ABIs des contrats
-│   ├── EventContractInstance.json
-│   └── MakaoFixture.json
+│   ├── EventContractInstance.js
+│   └── MakaoFixture.js
 ├── src/                       # Code source des mappings
 │   ├── mappings/
 │   │   ├── factory.ts

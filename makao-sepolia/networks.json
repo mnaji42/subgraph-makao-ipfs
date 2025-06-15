@@ -1,0 +1,8 @@
+{
+  "sepolia": {
+    "MakaoFactory": {
+      "address": "0xfc58FefaDA53D508FD584278B8EED8e7A02c34B2",
+      "startBlock": 8553252
+    }
+  }
+}
