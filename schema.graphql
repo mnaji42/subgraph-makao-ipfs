@@ -1,15 +1,19 @@
-# schema.graphql - VERSION MINIMALE CORRIGÉE (avec la directive immutable)
-
-# On définit une seule entité : Market.
-# On la déclare "mutable" (immutable: false) car on voudra la modifier plus tard
-# (par exemple, pour ajouter un titre, un statut, etc.).
 type Market @entity(immutable: false) {
-  # L'adresse du contrat du marché servira d'ID unique. C'est obligatoire.
+  # Champs existants
   id: ID!
-
-  # On stocke l'adresse du créateur du marché. Obligatoire.
   owner: Bytes!
-
-  # On stocke le moment de la création. Obligatoire.
   createdAt: BigInt!
+
+  # === NOUVEAUX CHAMPS AJOUTÉS ===
+  # Informations récupérées directement depuis le contrat
+  stakeToken: Bytes!
+  engagementDeadline: BigInt!
+  resolutionDeadline: BigInt!
+  creatorFee: BigInt!
+  predictionCount: BigInt!
+
+  # Informations que nous allons gérer nous-mêmes
+  totalAmount: BigInt!
+  isCancelled: Boolean!
+  isResolved: Boolean!
 }

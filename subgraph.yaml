@@ -38,6 +38,8 @@ dataSources:
       abis:
         - name: MakaoFactory
           file: ./abis/MakaoFactory.json
+        - name: MakaoFixture
+          file: ./abis/MakaoFixture.json
       eventHandlers:
         - event: CreateInstance(indexed address)
           handler: handleCreateInstance
@@ -61,6 +63,8 @@ templates:
         - GlobalStat
         - MarketEvent
       abis:
+        - name: MakaoFixture
+          file: ./abis/MakaoFixture.json
         - name: MakaoFixture
           file: ./abis/MakaoFixture.json
       eventHandlers:
