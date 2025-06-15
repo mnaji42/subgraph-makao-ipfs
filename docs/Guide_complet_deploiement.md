@@ -225,7 +225,7 @@ indexerHints:
   prune: auto
 
 description: Subgraph Alchemy pour indexer les marchés Makao
-repository: https://github.com/makao-team/makao-subgraph
+repository: https://github.com/mnaji42/subgraph-makao-ipfs.git
 
 schema:
   file: ./schema.graphql
@@ -805,33 +805,3 @@ query GetMarketDetails($id: ID!) {
 ---
 
 Ce guide vous a fourni toutes les étapes nécessaires pour déployer un subgraph Alchemy optimisé pour vos contrats Makao, avec intégration IPFS et pattern factory. Suivez les étapes dans l'ordre indiqué pour une mise en place efficace et performante [^3][^2][^5].
-
-<div style="text-align: center">⁂</div>
-
-[^1]: https://www.alchemy.com/dapps/best/subgraphs
-[^2]: https://blog.soniclabs.com/supercharge-your-development-with-alchemy-subgraphs/
-[^3]: https://www.alchemy.com/subgraphs
-[^4]: https://maci.pse.dev/docs/guides/subgraph
-[^5]: https://thegraph.com/docs/en/subgraphs/developing/creating/subgraph-manifest/
-[^6]: https://www.zeeve.io/blog/how-to-deploy-custom-subgraph-with-the-graph-protocol/
-[^7]: https://www.alchemy.com/docs/docs/introduction-to-subgraphs
-[^8]: https://thegraph.com/blog/file-data-sources-tutorial/
-[^9]: https://thegraph.com/blog/data-source-templates/
-[^10]: https://awsm.page/blockchain/graphprotocol-read-ipfs-data-in-subgraph/
-[^11]: https://docs.chainstack.com/docs/subgraphs-tutorial-debug-subgraphs-with-a-local-graph-node
-[^12]: https://www.apollographql.com/docs/graphos/platform/production-readiness/deployment-best-practices
-[^13]: https://www.alchemy.com/dapps/list-of/subgraphs-on-polygon
-[^14]: https://viblo.asia/p/the-graph-google-cua-blockchain-naQZRQeGKvx
-[^15]: https://github.com/satsuma-xyz
-[^16]: https://subquery.network/doc/subquery_network/architects/publish-subgraph.html
-[^17]: https://www.youtube.com/watch?v=e5OwjDao3MA
-[^18]: https://www.alchemy.com/blog/deploying-custom-rollup-raas-2025
-[^19]: https://www.alchemy.com/overviews/what-is-a-subgraph
-[^20]: https://www.alchemy.com
-[^21]: https://docs.polygon.technology/tools/data/thegraph/
-[^22]: https://tyk.io/docs/api-management/data-graph/
-[^23]: https://alchemy.com/docs/reference/subgraphs-quickstart
-[^24]: https://github.com/graphprotocol/graph-node/issues/1017
-[^25]: https://hub.docker.com/r/graphprotocol/graph-node
-[^26]: https://github.com/graphprotocol/graph-node/releases
-[^27]: https://www.linkedin.com/pulse/deploying-subgraph-your-local-machine-server-guide-reza-hedayati-7qfnf

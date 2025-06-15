@@ -1,21 +1,18 @@
 {
-  "name": "makao-subgraph-ipfs",
-  "version": "0.1.0",
-  "description": "Subgraph pour indexer les marchés Makao",
-  "main": "index.js",
+  "name": "makao-sepolia",
+  "license": "UNLICENSED",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz",
-    "deploy-prod": "graph deploy makao-subgraph --version-label prod-$(date +%Y%m%d-%H%M%S) --node https://subgraphs.alchemy.com/api/subgraphs/deploy --deploy-key YOUR_DEPLOY_KEY --ipfs https://ipfs.satsuma.xyz"
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ makao-sepolia",
+    "create-local": "graph create --node http://localhost:8020/ makao-sepolia",
+    "remove-local": "graph remove --node http://localhost:8020/ makao-sepolia",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 makao-sepolia",
+    "test": "graph test"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "devDependencies": {
-    "@graphprotocol/graph-ts": "^0.38.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
-  }
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.97.1",
+    "@graphprotocol/graph-ts": "0.37.0"
+  },
+  "devDependencies": { "matchstick-as": "0.6.0" }
 }

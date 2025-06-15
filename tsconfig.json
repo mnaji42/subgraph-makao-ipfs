@@ -1,13 +1,4 @@
 {
-  "compilerOptions": {
-    "target": "es2020",
-    "module": "commonjs",
-    "strict": true,
-    "esModuleInterop": true,
-    "outDir": "dist",
-    "noImplicitAny": true,
-    "resolveJsonModule": true
-  },
-  "include": ["src/**/*", "generated/**/*"],
-  "exclude": ["node_modules", "build", "dist"]
+  "extends": "@graphprotocol/graph-ts/types/tsconfig.base.json",
+  "include": ["src", "tests"]
 }

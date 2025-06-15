@@ -1,3 +1,12 @@
+# Graph CLI generated artifacts
+build/
+generated/
+data/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
 # Logs
 logs
 *.log
@@ -5,78 +14,22 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Dependency directories
-node_modules/
-jspm_packages/
-
 # Optional npm cache directory
-.npm/
+.npm
 
-# Optional REPL history
-.node_repl_history
+# Optional eslint cache
+.eslintcache
 
 # dotenv environment variables file
 .env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# Testing
+coverage
+coverage.json
 
-# Directory for compiled output
-dist/
-build/
+# Typechain
+typechain
+typechain-types
 
-# Coverage directory
-coverage/
-
-# TypeScrip cache
-*.tsbuildinfo
-
-# Editor directories and files
-.vscode/
-.idea/
-.DS_Store
-
-# Thumbnails
-.thumbnails/
-
-# OS generated files
-.DS_Store
-.Trashes
-Thumbs.db
-
-# Misc
-*.swp
-*.swo
-*.bak
-*.tmp
-
-# Mac specific
-.DS_Store
-
-# Windows specific
-Thumbs.db
-Desktop.ini
-
-# Linux specific
-.directory
-
-# Yarn
-yarn-error.log
-.yarn/
-
-# NVM
-.nvmrc
-
-# VS Code
-.vscode/
-
-# Subgraph specific
-build/
-generated/
+# Hardhat files
+cache
