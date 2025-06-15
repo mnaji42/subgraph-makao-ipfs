@@ -1,7 +1,18 @@
-specVersion: 1.3.0
+specVersion: 1.2.0 # La version compatible avec Alchemy
+
+features:
+  - ipfsOnEthereumContracts
+  - nonDeterministicIpfs
+  # - fullTextSearch permet de faire des recherches dans toute la base de donnée (une sorte de google)... tres utile pour la barre de recherche coté front => il faut ajouté dans schema.graphql une directive  @fulltext sur les champs qu'on veut rendre recherchable
+  # - grafting A ajouter pour ne pas tout reindexer pour l'instant pas besoin (voir la partie graft)
+  # - nonFatalErrors permet d'empecher le subgraph de crash en cas d'erreur dans une data (elle ignore juste le block en question)... Mais pas du tout recommendé
 
 indexerHints:
   prune: auto
+
+# graft:
+#   base: Qm... # L'ID de déploiement de ton ancien subgraph
+#   block: 8553252 # Le bloc où la greffe commence
 
 description: Subgraph Alchemy pour indexer les marchés Makao
 repository: https://github.com/makao-team/makao-subgraph
@@ -31,35 +42,36 @@ dataSources:
         - event: CreateInstance(indexed address)
           handler: handleCreateInstance
       file: ./src/makao-factory.ts
-# templates:
-#   - kind: ethereum
-#     name: MakaoFixture
-#     network: sepolia # Même réseau que la datasource principale
-#     source:
-#       abi: MakaoFixture
-#     mapping:
-#       kind: ethereum/events
-#       apiVersion: 0.0.7
-#       language: wasm/assemblyscript
-#       entities:
-#         - Market
-#         - Challenge
-#         - Engagement
-#         - Collection
-#         - User
-#         - GlobalStat
-#         - MarketEvent
-#       abis:
-#         - name: MakaoFixture
-#           file: ./abis/MakaoFixture.json
-#       eventHandlers:
-#         - event: EngageChallenge(address,uint256,uint256)
-#           handler: handleEngageChallenge
-#         - event: EventCancelled()
-#           handler: handleEventCancelled
-#         - event: ExitEvent(address,address,uint256)
-#           handler: handleExitEvent
-#         - event: ResolveEvent(uint256[])
-#           handler: handleResolveEvent
-#         - event: MarketMetadataSet(string)
-#           handler: handleMarketMetadataSet
+templates:
+  - kind: ethereum
+    name: MakaoFixture
+    network: sepolia # Même réseau que la datasource principale
+    source:
+      abi: MakaoFixture
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Market
+        - Challenge
+        - Engagement
+        - Collection
+        - User
+        - GlobalStat
+        - MarketEvent
+      abis:
+        - name: MakaoFixture
+          file: ./abis/MakaoFixture.json
+      eventHandlers:
+        - event: EngageChallenge(address,uint256,uint256)
+          handler: handleEngageChallenge
+        - event: EventCancelled()
+          handler: handleEventCancelled
+        - event: ExitEvent(indexed address,address,uint256)
+          handler: handleExitEvent
+        - event: ResolveEvent(uint256[])
+          handler: handleResolveEvent
+        - event: MarketMetadataSet(string)
+          handler: handleMarketMetadataSet
+      file: ./src/market.ts

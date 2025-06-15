@@ -6,11 +6,11 @@ Ce guide explique comment configurer et exécuter le subgraph Makao en local pou
 
 Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
 
-*   **Git**
-*   **Node.js** (version 18 ou supérieure recommandée)
-*   **npm** ou **Yarn** (npm est utilisé dans ce guide)
-*   **Docker** et **Docker Compose** (pour exécuter les services locaux Graph Node, IPFS et PostgreSQL)
-*   **Graph CLI** (`npm install -g @graphprotocol/graph-cli`)
+- **Git**
+- **Node.js** (version 18 ou supérieure recommandée)
+- **npm** ou **Yarn** (npm est utilisé dans ce guide)
+- **Docker** et **Docker Compose** (pour exécuter les services locaux Graph Node, IPFS et PostgreSQL)
+- **Graph CLI** (`npm install -g @graphprotocol/graph-cli`)
 
 ## 1. Cloner le dépôt
 
@@ -32,7 +32,7 @@ npm install
 
 Le subgraph nécessite un Graph Node local, un service IPFS et une base de données PostgreSQL pour fonctionner. Ceux-ci sont configurés via Docker Compose. Assurez-vous que Docker est en cours d'exécution.
 
-Dans le répertoire `makao-sepolia`, lancez les services Docker :
+Lancez les services Docker :
 
 ```bash
 docker compose up
