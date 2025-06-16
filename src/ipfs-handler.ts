@@ -1,11 +1,10 @@
-// src/ipfs-handler.ts
 import { json, Bytes, dataSource, log } from "@graphprotocol/graph-ts"
 import { Market, MarketEvent } from "../generated/schema"
 
 export function handleMarketMetadata(content: Bytes): void {
-  let ipfsHash = dataSource.stringParam()
   let context = dataSource.context()
   let marketId = context.getString("marketId")
+  let ipfsHash = dataSource.stringParam()
 
   log.info("Traitement des métadonnées IPFS {} pour le marché {}", [
     ipfsHash,
@@ -62,7 +61,6 @@ export function handleMarketMetadata(content: Bytes): void {
       let eventsValue = properties.get("events")
       if (eventsValue && !eventsValue.isNull()) {
         let eventsArray = eventsValue.toArray()
-
         for (let i = 0; i < eventsArray.length; i++) {
           let eventData = eventsArray[i].toObject()
           if (!eventData) continue
@@ -73,25 +71,21 @@ export function handleMarketMetadata(content: Bytes): void {
 
           if (
             eventIdValue &&
-            eventNameValue &&
-            eventDescriptionValue &&
             !eventIdValue.isNull() &&
+            eventNameValue &&
             !eventNameValue.isNull() &&
+            eventDescriptionValue &&
             !eventDescriptionValue.isNull()
           ) {
-            // Créer l'événement de marché
             let marketEventId =
               marketId + "-" + eventIdValue.toBigInt().toString()
             let marketEvent = new MarketEvent(marketEventId)
-
             marketEvent.market = marketId
             marketEvent.eventId = eventIdValue.toBigInt()
             marketEvent.name = eventNameValue.toString()
             marketEvent.description = eventDescriptionValue.toString()
             marketEvent.createdAt = dataSource.block().timestamp
-
             marketEvent.save()
-
             log.info("MarketEvent {} créé pour le marché {}", [
               marketEventId,
               marketId,
@@ -104,7 +98,6 @@ export function handleMarketMetadata(content: Bytes): void {
 
   // Sauvegarder le marché avec les nouvelles métadonnées
   market.save()
-
   log.info("Métadonnées IPFS traitées avec succès pour le marché {}", [
     marketId,
   ])

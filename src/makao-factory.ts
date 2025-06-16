@@ -1,14 +1,38 @@
+// src/makao-factory.ts
+
 import { BigInt, log } from "@graphprotocol/graph-ts"
 import { CreateInstance as CreateInstanceEvent } from "../generated/MakaoFactory/MakaoFactory"
 import { MakaoFixture as MakaoFixtureTemplate } from "../generated/templates"
 import { MakaoFixture } from "../generated/templates/MakaoFixture/MakaoFixture"
 import { Market, GlobalStat } from "../generated/schema"
 
+// AMÉLIORATION: Fonction utilitaire déplacée au niveau supérieur
+function updateGlobalStats(
+  isNewMarket: boolean,
+  volumeChange: BigInt,
+  timestamp: BigInt
+): void {
+  let globalStat = GlobalStat.load("global")
+  if (globalStat == null) {
+    globalStat = new GlobalStat("global")
+    globalStat.totalMarkets = BigInt.fromI32(0)
+    globalStat.totalVolume = BigInt.fromI32(0)
+    globalStat.totalUsers = BigInt.fromI32(0)
+  }
+
+  if (isNewMarket) {
+    globalStat.totalMarkets = globalStat.totalMarkets.plus(BigInt.fromI32(1))
+  }
+
+  globalStat.totalVolume = globalStat.totalVolume.plus(volumeChange)
+  globalStat.lastUpdated = timestamp
+  globalStat.save()
+}
+
 export function handleCreateInstance(event: CreateInstanceEvent): void {
   log.info("=== Création d'un nouveau marché : {} ===", [
     event.params.instance.toHexString(),
   ])
-
   let marketId = event.params.instance.toHexString()
   let market = new Market(marketId)
 
@@ -25,21 +49,24 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
   // Connexion au contrat pour récupérer les données
   let contract = MakaoFixture.bind(event.params.instance)
 
-  // Appels sécurisés avec try_
+  // CORRIGÉ: Structure des appels `try_` non imbriquée
   let ownerResult = contract.try_owner()
   if (!ownerResult.reverted) {
     market.owner = ownerResult.value
   } else {
     log.warning("Impossible de récupérer owner pour {}", [marketId])
-    market.owner = event.transaction.from
+    market.owner = event.transaction.from // fallback
   }
 
   let stakeTokenResult = contract.try_stakeToken()
   if (!stakeTokenResult.reverted) {
     market.stakeToken = stakeTokenResult.value
   } else {
-    log.error("Impossible de récupérer stakeToken pour {}", [marketId])
-    return // Arrêt si donnée critique manquante
+    log.error(
+      "Donnée critique 'stakeToken' manquante pour {}. Arrêt de la création.",
+      [marketId]
+    )
+    return // Arrêt si une donnée critique manque
   }
 
   let engagementDeadlineResult = contract.try_engagementDeadline()
@@ -72,26 +99,4 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
   MakaoFixtureTemplate.create(event.params.instance)
 
   log.info("Marché {} créé avec succès", [marketId])
-}
-
-function updateGlobalStats(
-  isNewMarket: boolean,
-  volumeChange: BigInt,
-  timestamp: BigInt
-): void {
-  let globalStat = GlobalStat.load("global")
-  if (globalStat == null) {
-    globalStat = new GlobalStat("global")
-    globalStat.totalMarkets = BigInt.fromI32(0)
-    globalStat.totalVolume = BigInt.fromI32(0)
-    globalStat.totalUsers = BigInt.fromI32(0)
-  }
-
-  if (isNewMarket) {
-    globalStat.totalMarkets = globalStat.totalMarkets.plus(BigInt.fromI32(1))
-  }
-
-  globalStat.totalVolume = globalStat.totalVolume.plus(volumeChange)
-  globalStat.lastUpdated = timestamp
-  globalStat.save()
 }
