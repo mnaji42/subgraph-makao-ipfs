@@ -1,19 +1,69 @@
 type Market @entity(immutable: false) {
-  # Champs existants
+  # Identifiant unique (adresse du contrat)
   id: ID!
+
+  # Données blockchain essentielles
+  contractAddress: Bytes!
   owner: Bytes!
+  creator: Bytes!
   createdAt: BigInt!
 
-  # === NOUVEAUX CHAMPS AJOUTÉS ===
-  # Informations récupérées directement depuis le contrat
+  # Informations contractuelles
   stakeToken: Bytes!
   engagementDeadline: BigInt!
   resolutionDeadline: BigInt!
   creatorFee: BigInt!
   predictionCount: BigInt!
 
-  # Informations que nous allons gérer nous-mêmes
+  # États gérés par les événements
   totalAmount: BigInt!
   isCancelled: Boolean!
   isResolved: Boolean!
+
+  # Métadonnées IPFS
+  ipfsHash: String
+  name: String
+  description: String
+  image: String
+
+  # Relations
+  events: [MarketEvent!]! @derivedFrom(field: "market")
+  engagements: [Engagement!]! @derivedFrom(field: "market")
+}
+
+type MarketEvent @entity(immutable: true) {
+  # ID unique : {market.id}-{eventId}
+  id: ID!
+
+  # Données depuis IPFS
+  eventId: BigInt!
+  market: Market!
+  name: String!
+  description: String!
+
+  # Métadonnées
+  createdAt: BigInt!
+}
+
+type Engagement @entity(immutable: true) {
+  # ID unique : transaction hash + log index
+  id: ID!
+
+  # Relations
+  market: Market!
+  user: Bytes!
+
+  # Données de l'engagement
+  amount: BigInt!
+  timestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+# Statistiques globales
+type GlobalStat @entity(immutable: false) {
+  id: ID! # Toujours "global"
+  totalMarkets: BigInt!
+  totalVolume: BigInt!
+  totalUsers: BigInt!
+  lastUpdated: BigInt!
 }

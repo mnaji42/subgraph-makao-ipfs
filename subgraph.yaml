@@ -10,15 +10,12 @@ features:
 indexerHints:
   prune: auto
 
-# graft:
-#   base: Qm... # L'ID de déploiement de ton ancien subgraph
-#   block: 8553252 # Le bloc où la greffe commence
-
-description: Subgraph Alchemy pour indexer les marchés Makao
-repository: https://github.com/makao-team/makao-subgraph
+description: Subgraph Makao avec intégration IPFS
+repository: https://github.com/mnaji42/subgraph-makao-ipfs
 
 schema:
   file: ./schema.graphql
+
 dataSources:
   - kind: ethereum
     name: MakaoFactory
@@ -33,7 +30,6 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Market
-        - User
         - GlobalStat
       abis:
         - name: MakaoFactory
@@ -44,10 +40,12 @@ dataSources:
         - event: CreateInstance(indexed address)
           handler: handleCreateInstance
       file: ./src/makao-factory.ts
+
 templates:
+  # Template pour les contrats de marché
   - kind: ethereum
     name: MakaoFixture
-    network: sepolia # Même réseau que la datasource principale
+    network: sepolia
     source:
       abi: MakaoFixture
     mapping:
@@ -56,15 +54,10 @@ templates:
       language: wasm/assemblyscript
       entities:
         - Market
-        - Challenge
-        - Engagement
-        - Collection
-        - User
-        - GlobalStat
         - MarketEvent
+        - Engagement
+        - GlobalStat
       abis:
-        - name: MakaoFixture
-          file: ./abis/MakaoFixture.json
         - name: MakaoFixture
           file: ./abis/MakaoFixture.json
       eventHandlers:
@@ -79,3 +72,18 @@ templates:
         - event: MarketMetadataSet(string)
           handler: handleMarketMetadataSet
       file: ./src/market.ts
+
+  # Template pour les données IPFS
+  - name: MarketMetadata
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/ipfs-handler.ts
+      handler: handleMarketMetadata
+      entities:
+        - Market
+        - MarketEvent
+      abis:
+        - name: MakaoFixture
+          file: ./abis/MakaoFixture.json
