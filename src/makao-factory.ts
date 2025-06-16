@@ -6,10 +6,9 @@ import { MakaoFixture as MakaoFixtureTemplate } from "../generated/templates"
 import { MakaoFixture } from "../generated/templates/MakaoFixture/MakaoFixture"
 import { Market, GlobalStat } from "../generated/schema"
 
-// AMÉLIORATION: Fonction utilitaire déplacée au niveau supérieur
 function updateGlobalStats(
   isNewMarket: boolean,
-  volumeChange: BigInt,
+  // volumeChange: BigInt,
   timestamp: BigInt
 ): void {
   let globalStat = GlobalStat.load("global")
@@ -24,7 +23,7 @@ function updateGlobalStats(
     globalStat.totalMarkets = globalStat.totalMarkets.plus(BigInt.fromI32(1))
   }
 
-  globalStat.totalVolume = globalStat.totalVolume.plus(volumeChange)
+  // globalStat.totalVolume = globalStat.totalVolume.plus(volumeChange)
   globalStat.lastUpdated = timestamp
   globalStat.save()
 }
@@ -46,10 +45,9 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
   market.isCancelled = false
   market.isResolved = false
 
-  // Connexion au contrat pour récupérer les données
   let contract = MakaoFixture.bind(event.params.instance)
 
-  // CORRIGÉ: Structure des appels `try_` non imbriquée
+  // CORRECTION MAJEURE: Structure des accolades réparée
   let ownerResult = contract.try_owner()
   if (!ownerResult.reverted) {
     market.owner = ownerResult.value
@@ -66,7 +64,7 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
       "Donnée critique 'stakeToken' manquante pour {}. Arrêt de la création.",
       [marketId]
     )
-    return // Arrêt si une donnée critique manque
+    return
   }
 
   let engagementDeadlineResult = contract.try_engagementDeadline()
@@ -89,14 +87,9 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
     market.predictionCount = predictionCountResult.value
   }
 
-  // Sauvegarde du marché
   market.save()
+  updateGlobalStats(true, event.block.timestamp)
 
-  // Mise à jour des statistiques globales
-  updateGlobalStats(true, BigInt.fromI32(0), event.block.timestamp)
-
-  // Activation du template pour écouter les événements du marché
   MakaoFixtureTemplate.create(event.params.instance)
-
-  log.info("Marché {} créé avec succès", [marketId])
+  log.info("Marché {} créé et template activé.", [marketId])
 }

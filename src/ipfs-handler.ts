@@ -5,26 +5,24 @@ export function handleMarketMetadata(content: Bytes): void {
   let context = dataSource.context()
   let marketId = context.getString("marketId")
   let ipfsHash = dataSource.stringParam()
+  let blockTimestamp = context.getBigInt("blockTimestamp")
 
   log.info("Traitement des métadonnées IPFS {} pour le marché {}", [
     ipfsHash,
     marketId,
   ])
 
-  // Charger le marché
   let market = Market.load(marketId)
   if (!market) {
     log.error("Marché {} non trouvé pour les métadonnées IPFS", [marketId])
     return
   }
 
-  // Tentative de récupération des données IPFS
   if (content === null) {
     log.warning("Données IPFS non disponibles pour {}", [ipfsHash])
     return
   }
 
-  // Parser le JSON
   let jsonResult = json.try_fromBytes(content as Bytes)
   if (jsonResult.isError) {
     log.warning("Impossible de parser le JSON IPFS pour {}", [ipfsHash])
@@ -84,19 +82,17 @@ export function handleMarketMetadata(content: Bytes): void {
             marketEvent.eventId = eventIdValue.toBigInt()
             marketEvent.name = eventNameValue.toString()
             marketEvent.description = eventDescriptionValue.toString()
-            marketEvent.createdAt = dataSource.block().timestamp
+
+            // CORRECTION: Utilisation du timestamp récupéré du contexte
+            marketEvent.createdAt = blockTimestamp
+
             marketEvent.save()
-            log.info("MarketEvent {} créé pour le marché {}", [
-              marketEventId,
-              marketId,
-            ])
           }
         }
       }
     }
   }
 
-  // Sauvegarder le marché avec les nouvelles métadonnées
   market.save()
   log.info("Métadonnées IPFS traitées avec succès pour le marché {}", [
     marketId,
