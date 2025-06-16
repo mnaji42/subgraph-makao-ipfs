@@ -2,7 +2,7 @@ import { BigInt, log, ipfs, json, Bytes } from "@graphprotocol/graph-ts"
 import { CreateInstance as CreateInstanceEvent } from "../generated/MakaoFactory/MakaoFactory"
 import { MakaoFixture as MakaoFixtureTemplate } from "../generated/templates"
 import { MakaoFixture } from "../generated/templates/MakaoFixture/MakaoFixture"
-import { Market, GlobalStat } from "../generated/schema"
+import { Market, MarketEvent, GlobalStat } from "../generated/schema"
 
 function updateGlobalStats(
   isNewMarket: boolean,
@@ -33,7 +33,7 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
   let marketId = event.params.instance.toHexString()
   let market = new Market(marketId)
 
-  // Données blockchain de base
+  // 1. Initialisation de base
   market.contractAddress = event.params.instance
   market.creator = event.transaction.from
   market.createdAt = event.block.timestamp
@@ -45,7 +45,7 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
 
   let contract = MakaoFixture.bind(event.params.instance)
 
-  // 2. Lecture de toutes les données publiques on-chain
+  // 2. Lecture séquentielle des données publiques on-chain
   let ownerResult = contract.try_owner()
   if (!ownerResult.reverted) {
     market.owner = ownerResult.value
@@ -76,8 +76,7 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
     market.predictionCount = predictionCountResult.value
   }
 
-  // --- LA LOGIQUE IPFS SIMPLIFIÉE ---
-  // 3. Lecture directe du hash IPFS public
+  // 3. Lecture et traitement des données IPFS
   let ipfsHashResult = contract.try_ipfsMetadataHash()
   if (!ipfsHashResult.reverted) {
     let ipfsHash = ipfsHashResult.value
@@ -117,7 +116,24 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
               if (eventsValue && !eventsValue.isNull()) {
                 let eventsArray = eventsValue.toArray()
                 for (let i = 0; i < eventsArray.length; i++) {
-                  // ... (logique pour créer les MarketEvent)
+                  let eventData = eventsArray[i].toObject()
+                  if (!eventData) continue
+
+                  let eventIdValue = eventData.get("id")
+                  let eventNameValue = eventData.get("name")
+                  let eventDescriptionValue = eventData.get("description")
+
+                  if (eventIdValue && eventNameValue && eventDescriptionValue) {
+                    let marketEventId =
+                      marketId + "-" + eventIdValue.toBigInt().toString()
+                    let marketEvent = new MarketEvent(marketEventId)
+                    marketEvent.market = marketId
+                    marketEvent.eventId = eventIdValue.toBigInt()
+                    marketEvent.name = eventNameValue.toString()
+                    marketEvent.description = eventDescriptionValue.toString()
+                    marketEvent.createdAt = event.block.timestamp
+                    marketEvent.save()
+                  }
                 }
               }
             }
@@ -137,7 +153,7 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
     ])
   }
 
-  // 6. Sauvegarde finale et activation du template
+  // 5. Sauvegarde finale et activation du template
   market.save()
   updateGlobalStats(true, event.block.timestamp)
   MakaoFixtureTemplate.create(event.params.instance)
