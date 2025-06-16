@@ -122,5 +122,18 @@
     ],
     "name": "MarketMetadataSet",
     "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "ipfsMetadataHash",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ]

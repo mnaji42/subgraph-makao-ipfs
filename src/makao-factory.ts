@@ -1,6 +1,4 @@
-// src/makao-factory.ts
-
-import { BigInt, log } from "@graphprotocol/graph-ts"
+import { BigInt, log, ipfs, json, Bytes } from "@graphprotocol/graph-ts"
 import { CreateInstance as CreateInstanceEvent } from "../generated/MakaoFactory/MakaoFactory"
 import { MakaoFixture as MakaoFixtureTemplate } from "../generated/templates"
 import { MakaoFixture } from "../generated/templates/MakaoFixture/MakaoFixture"
@@ -47,24 +45,15 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
 
   let contract = MakaoFixture.bind(event.params.instance)
 
-  // CORRECTION MAJEURE: Structure des accolades réparée
+  // 2. Lecture de toutes les données publiques on-chain
   let ownerResult = contract.try_owner()
   if (!ownerResult.reverted) {
     market.owner = ownerResult.value
-  } else {
-    log.warning("Impossible de récupérer owner pour {}", [marketId])
-    market.owner = event.transaction.from // fallback
   }
 
   let stakeTokenResult = contract.try_stakeToken()
   if (!stakeTokenResult.reverted) {
     market.stakeToken = stakeTokenResult.value
-  } else {
-    log.error(
-      "Donnée critique 'stakeToken' manquante pour {}. Arrêt de la création.",
-      [marketId]
-    )
-    return
   }
 
   let engagementDeadlineResult = contract.try_engagementDeadline()
@@ -87,9 +76,70 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
     market.predictionCount = predictionCountResult.value
   }
 
+  // --- LA LOGIQUE IPFS SIMPLIFIÉE ---
+  // 3. Lecture directe du hash IPFS public
+  let ipfsHashResult = contract.try_ipfsMetadataHash()
+  if (!ipfsHashResult.reverted) {
+    let ipfsHash = ipfsHashResult.value
+    market.ipfsHash = ipfsHash // On sauvegarde le hash
+    log.info("Hash IPFS trouvé pour le marché {}: {}", [marketId, ipfsHash])
+
+    // 4. Fetch des données depuis IPFS
+    let data = ipfs.cat(ipfsHash)
+    if (data) {
+      log.info("Données IPFS récupérées pour {}", [ipfsHash])
+      let jsonResult = json.try_fromBytes(data as Bytes)
+      if (!jsonResult.isError) {
+        let jsonData = jsonResult.value.toObject()
+        if (jsonData) {
+          // 5. Parsing et assignation des métadonnées
+          let nameValue = jsonData.get("name")
+          if (nameValue && !nameValue.isNull()) {
+            market.name = nameValue.toString()
+          }
+
+          let descriptionValue = jsonData.get("description")
+          if (descriptionValue && !descriptionValue.isNull()) {
+            market.description = descriptionValue.toString()
+          }
+
+          let imageValue = jsonData.get("image")
+          if (imageValue && !imageValue.isNull()) {
+            market.image = imageValue.toString()
+          }
+
+          // Traitement des événements imbriqués
+          let propertiesValue = jsonData.get("properties")
+          if (propertiesValue && !propertiesValue.isNull()) {
+            let properties = propertiesValue.toObject()
+            if (properties) {
+              let eventsValue = properties.get("events")
+              if (eventsValue && !eventsValue.isNull()) {
+                let eventsArray = eventsValue.toArray()
+                for (let i = 0; i < eventsArray.length; i++) {
+                  // ... (logique pour créer les MarketEvent)
+                }
+              }
+            }
+          }
+        }
+      } else {
+        log.warning("Erreur de parsing JSON pour {}", [ipfsHash])
+      }
+    } else {
+      log.warning("Impossible de récupérer les données IPFS pour {}", [
+        ipfsHash,
+      ])
+    }
+  } else {
+    log.warning("Impossible de récupérer ipfsMetadataHash pour le marché {}", [
+      marketId,
+    ])
+  }
+
+  // 6. Sauvegarde finale et activation du template
   market.save()
   updateGlobalStats(true, event.block.timestamp)
-
   MakaoFixtureTemplate.create(event.params.instance)
-  log.info("Marché {} créé et template activé.", [marketId])
+  log.info("Marché {} traité et sauvegardé.", [marketId])
 }

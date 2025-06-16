@@ -40,3 +40,35 @@ dataSources:
         - event: CreateInstance(indexed address)
           handler: handleCreateInstance
       file: ./src/makao-factory.ts
+
+templates:
+  # Template pour les contrats de marché
+  - kind: ethereum
+    name: MakaoFixture
+    network: sepolia
+    source:
+      abi: MakaoFixture
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Market
+        - MarketEvent
+        - Engagement
+        - GlobalStat
+      abis:
+        - name: MakaoFixture
+          file: "./abis/MakaoFixtureLight.json"
+      eventHandlers:
+        - event: EngageChallenge(address,uint256,uint256)
+          handler: handleEngageChallenge
+        - event: EventCancelled()
+          handler: handleEventCancelled
+        - event: ExitEvent(indexed address,address,uint256)
+          handler: handleExitEvent
+        - event: ResolveEvent(uint256[])
+          handler: handleResolveEvent
+        - event: MarketMetadataSet(string)
+          handler: handleMarketMetadataSet
+      file: ./src/market.ts
