@@ -21,15 +21,16 @@ dataSources:
     name: MakaoFactory
     network: sepolia
     source:
-      address: "0xfc58FefaDA53D508FD584278B8EED8e7A02c34B2"
+      address: "0x68b7e0417ec5cAc421E5DC4C172a80D7dD8dAa04"
       abi: MakaoFactory
-      startBlock: 8553252
+      startBlock: 8568022
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       entities:
         - Market
+        - MarketEvent
         - GlobalStat
       abis:
         - name: MakaoFactory
@@ -54,7 +55,6 @@ templates:
       language: wasm/assemblyscript
       entities:
         - Market
-        - MarketEvent
         - Engagement
         - GlobalStat
       abis:
@@ -69,6 +69,4 @@ templates:
           handler: handleExitEvent
         - event: ResolveEvent(uint256[])
           handler: handleResolveEvent
-        - event: MarketMetadataSet(string)
-          handler: handleMarketMetadataSet
       file: ./src/market.ts

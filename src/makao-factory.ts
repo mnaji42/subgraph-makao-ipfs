@@ -85,6 +85,7 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
 
     // 4. Fetch des données depuis IPFS
     let data = ipfs.cat(ipfsHash)
+
     if (data) {
       log.info("Données IPFS récupérées pour {}", [ipfsHash])
       let jsonResult = json.try_fromBytes(data as Bytes)
