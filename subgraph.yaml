@@ -3,9 +3,9 @@ specVersion: 1.2.0 # La version compatible avec Alchemy
 features:
   - ipfsOnEthereumContracts
   - nonDeterministicIpfs
-  # - fullTextSearch permet de faire des recherches dans toute la base de donnée (une sorte de google)... tres utile pour la barre de recherche coté front => il faut ajouté dans schema.graphql une directive  @fulltext sur les champs qu'on veut rendre recherchable
-  # - grafting A ajouter pour ne pas tout reindexer pour l'instant pas besoin (voir la partie graft)
-  # - nonFatalErrors permet d'empecher le subgraph de crash en cas d'erreur dans une data (elle ignore juste le block en question)... Mais pas du tout recommendé
+# - fullTextSearch permet de faire des recherches dans toute la base de donnée (une sorte de google)... tres utile pour la barre de recherche coté front => il faut ajouté dans schema.graphql une directive  @fulltext sur les champs qu'on veut rendre recherchable
+# - grafting A ajouter pour ne pas tout reindexer pour l'instant pas besoin (voir la partie graft)
+# - nonFatalErrors permet d'empecher le subgraph de crash en cas d'erreur dans une data (elle ignore juste le block en question)... Mais pas du tout recommendé
 
 indexerHints:
   prune: auto
@@ -70,3 +70,17 @@ templates:
         - event: ResolveEvent(uint256[])
           handler: handleResolveEvent
       file: ./src/market.ts
+
+  # Un template dédié pour traiter le contenu des fichiers IPFS
+  - name: IpfsContent
+    kind: file/ipfs
+    mapping:
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      file: ./src/ipfs-handler.ts
+      abis:
+        - name: MakaoFixture
+          file: "./abis/MakaoFixtureLight.json"
+      handler: handleIpfsContent
+      entities:
+        - Market

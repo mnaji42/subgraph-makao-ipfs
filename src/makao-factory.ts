@@ -1,8 +1,9 @@
-import { BigInt, log, ipfs, json, Bytes } from "@graphprotocol/graph-ts"
+import { BigInt, log, DataSourceContext } from "@graphprotocol/graph-ts"
 import { CreateInstance as CreateInstanceEvent } from "../generated/MakaoFactory/MakaoFactory"
 import { MakaoFixture as MakaoFixtureTemplate } from "../generated/templates"
 import { MakaoFixture } from "../generated/templates/MakaoFixture/MakaoFixture"
-import { Market, MarketEvent, GlobalStat } from "../generated/schema"
+import { Market, GlobalStat } from "../generated/schema"
+import { IpfsContent as IpfsContentTemplate } from "../generated/templates"
 
 function updateGlobalStats(
   isNewMarket: boolean,
@@ -42,6 +43,7 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
   market.totalAmount = BigInt.fromI32(0)
   market.isCancelled = false
   market.isResolved = false
+  // market.isMetadataSynced = false
 
   let contract = MakaoFixture.bind(event.params.instance)
 
@@ -80,76 +82,21 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
   let ipfsHashResult = contract.try_ipfsMetadataHash()
   if (!ipfsHashResult.reverted) {
     let ipfsHash = ipfsHashResult.value
-    market.ipfsHash = ipfsHash // On sauvegarde le hash
-    log.info("Hash IPFS trouvé pour le marché {}: {}", [marketId, ipfsHash])
+    market.ipfsHash = ipfsHash
 
-    // 4. Fetch des données depuis IPFS
-    let data = ipfs.cat(ipfsHash)
+    // 3. Création du contexte pour passer l'ID du marché
+    let context = new DataSourceContext()
+    context.setString("marketId", marketId)
 
-    if (data) {
-      log.info("Données IPFS récupérées pour {}", [ipfsHash])
-      let jsonResult = json.try_fromBytes(data as Bytes)
-      if (!jsonResult.isError) {
-        let jsonData = jsonResult.value.toObject()
-        if (jsonData) {
-          // 5. Parsing et assignation des métadonnées
-          let nameValue = jsonData.get("name")
-          if (nameValue && !nameValue.isNull()) {
-            market.name = nameValue.toString()
-          }
+    // 4. Déclenchement du template AVEC le contexte
+    IpfsContentTemplate.createWithContext(ipfsHash, context)
 
-          let descriptionValue = jsonData.get("description")
-          if (descriptionValue && !descriptionValue.isNull()) {
-            market.description = descriptionValue.toString()
-          }
-
-          let imageValue = jsonData.get("image")
-          if (imageValue && !imageValue.isNull()) {
-            market.image = imageValue.toString()
-          }
-
-          // Traitement des événements imbriqués
-          let propertiesValue = jsonData.get("properties")
-          if (propertiesValue && !propertiesValue.isNull()) {
-            let properties = propertiesValue.toObject()
-            if (properties) {
-              let eventsValue = properties.get("events")
-              if (eventsValue && !eventsValue.isNull()) {
-                let eventsArray = eventsValue.toArray()
-                for (let i = 0; i < eventsArray.length; i++) {
-                  let eventData = eventsArray[i].toObject()
-                  if (!eventData) continue
-
-                  let eventIdValue = eventData.get("id")
-                  let eventNameValue = eventData.get("name")
-                  let eventDescriptionValue = eventData.get("description")
-
-                  if (eventIdValue && eventNameValue && eventDescriptionValue) {
-                    let marketEventId =
-                      marketId + "-" + eventIdValue.toBigInt().toString()
-                    let marketEvent = new MarketEvent(marketEventId)
-                    marketEvent.market = marketId
-                    marketEvent.eventId = eventIdValue.toBigInt()
-                    marketEvent.name = eventNameValue.toString()
-                    marketEvent.description = eventDescriptionValue.toString()
-                    marketEvent.createdAt = event.block.timestamp
-                    marketEvent.save()
-                  }
-                }
-              }
-            }
-          }
-        }
-      } else {
-        log.warning("Erreur de parsing JSON pour {}", [ipfsHash])
-      }
-    } else {
-      log.warning("Impossible de récupérer les données IPFS pour {}", [
-        ipfsHash,
-      ])
-    }
+    log.info(
+      "Template IPFS déclenché pour le CID {} avec le contexte du marché {}",
+      [ipfsHash, marketId]
+    )
   } else {
-    log.warning("Impossible de récupérer ipfsMetadataHash pour le marché {}", [
+    log.warning("Impossible de récupérer l'ipfsHash pour le marché {}", [
       marketId,
     ])
   }
@@ -158,5 +105,4 @@ export function handleCreateInstance(event: CreateInstanceEvent): void {
   market.save()
   updateGlobalStats(true, event.block.timestamp)
   MakaoFixtureTemplate.create(event.params.instance)
-  log.info("Marché {} traité et sauvegardé.", [marketId])
 }

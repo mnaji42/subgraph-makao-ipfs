@@ -22,13 +22,21 @@ type Market @entity(immutable: false) {
 
   # Métadonnées IPFS
   ipfsHash: String
+  # isMetadataSynced: Boolean!
+
+  # Relations
+  metadata: MarketMetadata @derivedFrom(field: "market")
+  engagements: [Engagement!]! @derivedFrom(field: "market")
+}
+
+type MarketMetadata @entity(immutable: true) {
+  id: ID!
+  market: Market!
+
   name: String
   description: String
   image: String
-
-  # Relations
-  events: [MarketEvent!]! @derivedFrom(field: "market")
-  engagements: [Engagement!]! @derivedFrom(field: "market")
+  events: [MarketEvent!]! @derivedFrom(field: "marketMetadata")
 }
 
 type MarketEvent @entity(immutable: true) {
@@ -37,12 +45,12 @@ type MarketEvent @entity(immutable: true) {
 
   # Données depuis IPFS
   eventId: BigInt!
-  market: Market!
+  marketMetadata: MarketMetadata!
   name: String!
   description: String!
 
-  # Métadonnées
-  createdAt: BigInt!
+  # # Métadonnées
+  # createdAt: BigInt!
 }
 
 type Engagement @entity(immutable: true) {
