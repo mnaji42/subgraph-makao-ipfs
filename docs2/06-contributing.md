@@ -1,116 +1,90 @@
-# Guide de Développement Interne
+# Guide de Développement
 
-Ce document a pour but de définir nos conventions de travail pour garantir que le projet reste cohérent, maintenable et de haute qualité.
+Ce document définit nos conventions de travail pour garantir l'efficacité, la qualité et la maintenabilité de ce projet.
 
-## Philosophie
+### Nos 3 Principes Clés
 
-- **Pragmatisme avant tout** : Appliquons les règles qui ont du sens pour nous.
-- **Communication** : Une question ou une incertitude ? On en parle avant de passer des heures à coder.
-- **Responsabilité** : Chaque développeur est responsable de la qualité et de l'impact de son code.
+- **Pragmatisme** : Nous appliquons des règles utiles qui ont un impact positif direct.
+- **Communication** : Une incertitude ? Nous en discutons en équipe avant de continuer.
+- **Responsabilité** : Chaque développeur est garant de la qualité et du bon fonctionnement de son code.
 
-## Workflow de Développement
+---
 
-Chaque nouvelle fonctionnalité ou correctif doit suivre ce processus simple en 6 étapes.
+## Le Cycle de Développement
 
-#### 1. Créer une Branche
+Chaque nouvelle tâche, qu'il s'agisse d'une fonctionnalité ou d'un correctif, suit ce processus structuré.
 
-Ne travaillez jamais directement sur la branche `main`. Partez toujours d'une version à jour de `main` pour créer votre branche.
+### Étape 1 : Développement sur une Branche Dédiée
 
-Utilisez une convention de nommage claire :
+**Règle fondamentale : ne jamais travailler directement sur la branche `main`.**
 
-- **`feature/<nom-feature>`** pour une nouvelle fonctionnalité (ex: `feature/add-nft-metadata`).
-- **`fix/<nom-bug>`** pour un correctif (ex: `fix/user-balance-calculation`).
-- **`chore/<tache>`** pour la maintenance, la documentation, etc. (ex: `chore/update-dependencies`).
+1.  **Synchronisez votre branche `main` locale** :
+    `git checkout main && git pull origin main`
 
-```
+2.  **Créez une nouvelle branche** (voir conventions ci-dessous).
 
+3.  **Développez la fonctionnalité**. Faites des commits réguliers pour sauvegarder votre progression.
 
-# 1. Se mettre à jour avec la branche principale
+### Étape 2 : Vérification et Documentation
 
-git checkout main
-git pull origin main
+Avant de proposer votre code, deux vérifications sont **impératives**.
 
-# 2. Créer sa branche
+#### A. Tests Locaux
 
-git checkout -b feature/nom-de-la-feature
+1.  Lancez l'environnement : `docker compose up`
+2.  Déployez votre version du subgraph : `npm run deploy-local`
+3.  Vérifiez l'absence d'erreurs et la cohérence des données.
 
-```
+#### B. Mise à Jour de la Documentation
 
-#### 2. Développer
+> **Règle d'or : Tout changement de code doit être reflété dans la documentation du dossier `/docs`.**
 
-Codez votre fonctionnalité ou votre correctif. N'hésitez pas à faire des commits réguliers sur votre branche pour sauvegarder votre progression.
+### Étape 3 : Intégration du Code via Pull Request
 
-#### 3. Tester Localement
+Votre code est prêt, testé et documenté. Il est temps de le partager avec l'équipe.
+La PR doit suivre les conventions de nommage et être validée par une revue de code.
 
-Avant de considérer votre travail comme terminé, il est **impératif** de le tester localement.
+---
 
-1.  Lancez l'environnement avec `docker compose up`.
-2.  Déployez votre version du subgraph avec `npm run deploy-local`.
-3.  Vérifiez que l'indexation se déroule sans erreur et que les données interrogées via l'interface GraphiQL locale sont correctes.
+## Nos Conventions de Nommage
 
-#### 4. Documenter vos Changements
+Pour un historique clair et une collaboration fluide, nous suivons une structure simple et prévisible.
 
-La documentation est aussi importante que le code.
+### 1. Branches
 
-> **Règle d'or : tout changement de logique métier, d'entité ou de handler doit être reflété dans la documentation du dossier `/docs`.**
+Le nom de la branche doit indiquer son intention.
+**Format :** `<type>/<description-courte>`
 
-Si vous modifiez le `handleSetAttribute`, mettez à jour `docs/03-subgraph-details/03-mappings/02-handleSetAttribute.md`. C'est simple, rapide, et crucial pour l'équipe.
+- **Exemples :**
+  - `feature/gestion-profils-utilisateur`
+  - `fix/calcul-incorrect-timestamp`
+  - `chore/mise-a-jour-dependances`
 
-#### 5. Faire des Commits Propres
+### 2. Commits et Titres de Pull Request
 
-Utilisez le format "Conventional Commits". C'est une convention simple qui rend l'historique Git lisible et nous prépare à une automatisation future.
+Ils doivent suivre le format **Conventional Commits**.
+**Format :** `<type>(<scope>): <description>`
 
-Format : `<type>(<scope>): <sujet>`
+| Type           | À utiliser pour...                                    | Exemple de commit                                           |
+| :------------- | :---------------------------------------------------- | :---------------------------------------------------------- |
+| **`feat`**     | Une nouvelle fonctionnalité                           | `feat(schema): ajoute l'entité NFTMetadata`                 |
+| **`fix`**      | La correction d'un bug                                | `fix(mapping): corrige le calcul d'un solde`                |
+| **`docs`**     | Des changements dans la documentation                 | `docs(readme): met à jour le guide de déploiement`          |
+| **`refactor`** | Une modification du code qui n'ajoute rien de nouveau | `refactor(utils): simplifie la fonction de génération d'ID` |
+| **`chore`**    | Des tâches de maintenance (dépendances, scripts...)   | `chore: met à jour la version de graph-cli`                 |
 
-- **`feat`** : Nouvelle fonctionnalité.
-- **`fix`** : Correction de bug.
-- **`docs`** : Changement dans la documentation.
-- **`style`** : Changement de style de code (formatage, etc.).
-- **`refactor`** : Refactoring de code sans changement de fonctionnalité.
-- **`test`** : Ajout ou modification de tests.
-- **`chore`** : Tâches de maintenance.
+- **Le `(scope)`** est optionnel et précise la zone du code impactée (`schema`, `mapping`, etc.).
+- **La `description`** doit être à l'impératif, en minuscule et sans point final.
 
-**Exemples :**
+**Un bon titre de Pull Request suit exactement la même règle.**
 
-```
+---
 
-feat(entities): add support for optional NFT metadata
-fix(mapping): correct timestamp conversion for Instance creation
-docs(readme): update deployment instructions
+## ⚠️ Changements Critiques : Discussion Préalable Obligatoire
 
-```
+Pour toute modification sur les fichiers suivants, une **discussion avec l'équipe est requise AVANT de commencer le développement** :
 
-#### 6. Créer une Pull Request (PR)
+- **`schema.graphql`**
+- **`subgraph.yaml`**
 
-Une fois que votre branche est prête, poussez-la sur le dépôt et ouvrez une Pull Request vers la branche `main`.
-
-## Processus de Pull Request
-
-La Pull Request est notre principal outil de revue de code et de validation.
-
-#### Titre et Description
-
-- **Titre clair** : Le titre de votre PR doit être explicite (ex: `feat: Add User profile entity`).
-- **Description utile** : Utilisez un modèle simple pour décrire votre PR :
-  - **Objectif** : Qu'est-ce que cette PR accomplit ? Pourquoi est-elle nécessaire ?
-  - **Changements techniques** : Un résumé des modifications apportées.
-  - **Comment tester** : Quelques étapes pour que le relecteur puisse valider votre travail.
-
-#### Revue de Code
-
-- Au moins **un autre développeur** doit relire et approuver votre PR.
-- La revue a pour but d'améliorer la qualité du code, de partager la connaissance et de détecter les éventuels problèmes. Soyez ouvert aux commentaires et constructif dans vos retours.
-
-#### Fusion (Merge)
-
-- Une fois la PR approuvée, c'est à **l'auteur de la PR** de la fusionner dans `main`.
-- Cochez l'option "Delete branch after merging" pour garder le dépôt propre.
-
-## Gérer les Changements Critiques
-
-Certains fichiers sont plus sensibles que d'autres.
-
-- **`schema.graphql`** : Toute modification sur ce fichier a un impact majeur sur toute la structure de données. **Discutez-en avec l'équipe AVANT de commencer à coder.**
-- **`subgraph.yaml`** : L'ajout d'un contrat, d'une source de données ou d'un handler doit également faire l'objet d'une discussion préalable.
-
-Merci de suivre ces directives pour que nous puissions construire ensemble un projet solide et agréable à maintenir !
+Merci de suivre ce guide. Il est la clé d'un projet solide que nous pouvons faire évoluer sereinement.
