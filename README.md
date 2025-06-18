@@ -17,9 +17,10 @@ Ce projet suit les meilleures pratiques pour le développement de modèles de do
 
 ## Fonctionnalités Clés
 
-- **Indexation des contrats :** Indexe les événements des principaux contrats de l'écosystème Makao.
-- **Schéma de données optimisé :** Entités `User`, `Instance`, `Attribute`, etc., conçues pour des requêtes performantes.
-- **API GraphQL :** Fournit un point d'accès unique et simple pour accéder aux données de l'écosystème.
+- **Indexation des contrats :** Indexe les événements des principaux contrats de l'écosystème Makao (`MakaoFactory`, `MakaoFixture`).
+- **Schéma de données optimisé :** Entités `Market`, `Engagement`, `MarketMetadata`, etc., conçues pour séparer clairement les données on-chain et off-chain.
+- **Intégration IPFS Asynchrone :** Récupère les métadonnées riches depuis IPFS de manière robuste, sans jamais bloquer l'indexation.
+- **API GraphQL :** Fournit un point d'accès unique et simple pour accéder à toutes les données de l'écosystème.
 
 ## Démarrage Rapide
 
@@ -30,7 +31,7 @@ Assurez-vous d'avoir les outils suivants installés :
 - **Git**
 - **Node.js** (v18+) et **npm**
 - **Docker** et **Docker Compose**
-- **Graph CLI** (`npm install -g @graphprotocol/graph-protocol/graph-cli`)
+- **Graph CLI** (`npm install -g @graphprotocol/graph-cli`)
 
 ### Installation et Déploiement Local
 
@@ -60,7 +61,7 @@ npm run create-local
 npm run deploy-local
 ```
 
-Pour des instructions détaillées, consultez le [guide de déploiement local](./docs/04-deployment.md).
+Pour des instructions détaillées, consultez le [guide de déploiement complet](./docs/04-deployment.md).
 
 ## Documentation Complète
 
@@ -76,8 +77,6 @@ La documentation technique complète est centralisée dans le dossier `/docs`. E
 - **[❓ 5. Comment Interroger les Données](./docs/05-how-to-query.md)** : Exemples de requêtes GraphQL.
 
 ## Structure du Projet
-
-Une vue d'ensemble de la structure des dossiers du projet [^1] :
 
 ```
 .
