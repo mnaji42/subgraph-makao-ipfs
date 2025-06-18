@@ -82,6 +82,10 @@ Une vue d'ensemble de la structure des dossiers du projet [^1] :
 └── package.json       # Dépendances et scripts du projet
 ```
 
+## Contribuer
+
+Les contributions sont les bienvenues ! Veuillez consulter notre [guide de contribution](./docs/06-contributing.md) pour plus de détails sur le processus.
+
 ## Licence
 
 Ce projet est sous licence MIT.
