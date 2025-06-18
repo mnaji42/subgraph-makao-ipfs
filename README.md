@@ -1,87 +1,87 @@
-# Makao Subgraph - Local Development Guide
+# Makao Subgraph
 
-Ce guide explique comment configurer et exécuter le subgraph Makao en local pour le développement et les tests.
+## Aperçu
 
-## Prérequis
+Le Subgraph Makao est un projet développé avec The Graph Protocol pour indexer et organiser les données de la blockchain liées à l'écosystème Makao. Il écoute les événements émis par nos contrats intelligents et les transforme en une API GraphQL structurée, permettant d'interroger efficacement les données on-chain.
 
-Avant de commencer, assurez-vous d'avoir les éléments suivants installés sur votre machine :
+Ce projet suit les meilleures pratiques pour le développement de modèles de données afin d'assurer la flexibilité et la cohérence [^7].
+
+## Table des matières
+
+- [Fonctionnalités Clés](#fonctionnalit%C3%A9s-cl%C3%A9s)
+- [Démarrage Rapide](#d%C3%A9marrage-rapide)
+- [Documentation Complète](#documentation-compl%C3%A8te)
+- [Structure du Projet](#structure-du-projet)
+- [Contribuer](#contribuer)
+- [Licence](#licence)
+
+## Fonctionnalités Clés
+
+- **Indexation des contrats :** Indexe les événements des contrats X, Y, Z.
+- **Schéma de données optimisé :** Entités `User`, `Transaction`, etc., conçues pour des requêtes performantes.
+- **API GraphQL :** Fournit un point d'accès unique et simple pour accéder aux données de l'écosystème.
+
+## Démarrage Rapide
+
+### Prérequis
+
+Assurez-vous d'avoir les outils suivants installés :
 
 - **Git**
-- **Node.js** (version 18 ou supérieure recommandée)
-- **npm** ou **Yarn** (npm est utilisé dans ce guide)
-- **Docker** et **Docker Compose** (pour exécuter les services locaux Graph Node, IPFS et PostgreSQL)
+- **Node.js** (v18+)
+- **npm** ou **Yarn**
+- **Docker** et **Docker Compose**
 - **Graph CLI** (`npm install -g @graphprotocol/graph-cli`)
 
-## 1. Cloner le dépôt
+### Installation et Déploiement Local
 
-Si ce n'est pas déjà fait, clonez le dépôt du projet :
+1. **Cloner le dépôt :**
 
 ```bash
 git clone https://github.com/mnaji42/subgraph-makao-ipfs.git
+cd subgraph-makao-ipfs
 ```
 
-## 2. Installer les dépendances
-
-Naviguez dans le répertoire du subgraph et installez les dépendances Node.js :
+2. **Installer les dépendances :**
 
 ```bash
 npm install
 ```
 
-## 3. Démarrer les services locaux (Graph Node, IPFS, PostgreSQL)
-
-Le subgraph nécessite un Graph Node local, un service IPFS et une base de données PostgreSQL pour fonctionner. Ceux-ci sont configurés via Docker Compose. Assurez-vous que Docker est en cours d'exécution.
-
-Lancez les services Docker :
+3. **Lancer l'environnement local (dans un premier terminal) :**
 
 ```bash
 docker compose up
 ```
 
-Laissez cette fenêtre de terminal ouverte, car les services doivent rester en cours d'exécution.
-
-## 4. Créer le subgraph localement
-
-Dans une **nouvelle fenêtre de terminal**,
-
-Vous devez d'abord créer le subgraph sur votre Graph Node local. Le nom du subgraph est `makao-sepolia`.
+4. **Créer et déployer le subgraph localement (dans un second terminal) :**
 
 ```bash
 npm run create-local
-```
-
-Cette commande utilise le script `create-local` défini dans votre `package.json`, qui exécute `graph create --node http://localhost:8020/ makao-sepolia`.
-
-## 5. Construire le subgraph
-
-Compilez le code AssemblyScript de votre subgraph :
-
-```bash
-npm run build
-```
-
-Cette commande générera les fichiers optimisés nécessaires au déploiement.
-
-## 6. Déployer le subgraph localement
-
-Maintenant, déployez le subgraph sur votre Graph Node local :
-
-```bash
 npm run deploy-local
 ```
 
-Cette commande utilise le script `deploy-local` défini dans votre `package.json`, qui exécute `graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001/ makao-sepolia`.
+Pour des instructions détaillées, consultez le [guide de déploiement local](./docs/04-deployment.md).
 
-Si le déploiement est réussi, vous verrez une URL de l'interface utilisateur du Graph Node local (par exemple, `http://localhost:8000/subgraphs/name/makao-sepolia/graphql`) où vous pourrez interroger votre subgraph.
+## Documentation Complète
 
-## 7. Arrêter les services locaux
+Pour une compréhension approfondie du projet, de son architecture et de son fonctionnement technique, veuillez consulter notre **[documentation complète dans le dossier /docs](./docs)**. Vous y trouverez des informations détaillées sur le schéma, les mappings et la manière d'interroger les données [^3].
 
-Lorsque vous avez terminé de travailler sur le subgraph, vous pouvez arrêter les services Docker en revenant à la fenêtre de terminal où `docker compose up` est en cours d'exécution et en appuyant sur `Ctrl+C`. Pour supprimer les conteneurs et les volumes (et donc les données de la base de données et d'IPFS), utilisez :
+## Structure du Projet
 
-```bash
-docker compose down -v
+Une vue d'ensemble de la structure des dossiers du projet [^1] :
+
+```
+.
+├── abis/              # ABIs des contrats intelligents
+├── docs/              # Documentation complète du projet
+├── generated/         # Fichiers et types générés par The Graph CLI
+├── src/               # Code source des mappings (AssemblyScript)
+├── subgraph.yaml      # Le fichier manifeste du subgraph
+├── schema.graphql     # Le schéma de données GraphQL
+└── package.json       # Dépendances et scripts du projet
 ```
 
----
+## Licence
 
-N'hésitez pas si vous avez d'autres questions ou si vous rencontrez des problèmes lors de ces étapes !
+Ce projet est sous licence MIT.
