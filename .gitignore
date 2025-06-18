@@ -33,3 +33,6 @@ typechain-types
 
 # Hardhat files
 cache
+
+# Other
+.DS_STORE
