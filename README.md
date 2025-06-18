@@ -4,21 +4,21 @@
 
 Le Subgraph Makao est un projet développé avec The Graph Protocol pour indexer et organiser les données de la blockchain liées à l'écosystème Makao. Il écoute les événements émis par nos contrats intelligents et les transforme en une API GraphQL structurée, permettant d'interroger efficacement les données on-chain.
 
-Ce projet suit les meilleures pratiques pour le développement de modèles de données afin d'assurer la flexibilité et la cohérence [^7].
+Ce projet suit les meilleures pratiques pour le développement de modèles de données afin d'assurer la flexibilité et la cohérence.
 
 ## Table des matières
 
-- [Fonctionnalités Clés](#fonctionnalit%C3%A9s-cl%C3%A9s)
-- [Démarrage Rapide](#d%C3%A9marrage-rapide)
-- [Documentation Complète](#documentation-compl%C3%A8te)
+- [Fonctionnalités Clés](#fonctionnalités-clés)
+- [Démarrage Rapide](#démarrage-rapide)
+- [Documentation Complète](#documentation-complète)
 - [Structure du Projet](#structure-du-projet)
-- [Contribuer](#contribuer)
+- [Directives de Développement](#directives-de-développement)
 - [Licence](#licence)
 
 ## Fonctionnalités Clés
 
-- **Indexation des contrats :** Indexe les événements des contrats X, Y, Z.
-- **Schéma de données optimisé :** Entités `User`, `Transaction`, etc., conçues pour des requêtes performantes.
+- **Indexation des contrats :** Indexe les événements des principaux contrats de l'écosystème Makao.
+- **Schéma de données optimisé :** Entités `User`, `Instance`, `Attribute`, etc., conçues pour des requêtes performantes.
 - **API GraphQL :** Fournit un point d'accès unique et simple pour accéder aux données de l'écosystème.
 
 ## Démarrage Rapide
@@ -28,10 +28,9 @@ Ce projet suit les meilleures pratiques pour le développement de modèles de do
 Assurez-vous d'avoir les outils suivants installés :
 
 - **Git**
-- **Node.js** (v18+)
-- **npm** ou **Yarn**
+- **Node.js** (v18+) et **npm**
 - **Docker** et **Docker Compose**
-- **Graph CLI** (`npm install -g @graphprotocol/graph-cli`)
+- **Graph CLI** (`npm install -g @graphprotocol/graph-protocol/graph-cli`)
 
 ### Installation et Déploiement Local
 
@@ -65,7 +64,16 @@ Pour des instructions détaillées, consultez le [guide de déploiement local](.
 
 ## Documentation Complète
 
-Pour une compréhension approfondie du projet, de son architecture et de son fonctionnement technique, veuillez consulter notre **[documentation complète dans le dossier /docs](./docs)**. Vous y trouverez des informations détaillées sur le schéma, les mappings et la manière d'interroger les données [^3].
+La documentation technique complète est centralisée dans le dossier `/docs`. Elle est essentielle pour comprendre en profondeur l'architecture et la logique du subgraph.
+
+- **[📄 1. Introduction](./docs/01-introduction.md)** : Objectifs et périmètre du subgraph.
+- **[🏗️ 2. Architecture](./docs/02-architecture.md)** : Vue d'ensemble du flux de données, des contrats aux requêtes GraphQL.
+- **[⚙️ 3. Détails Techniques](./docs/03-subgraph-details/)** :
+  - **[Schéma GraphQL](./docs/03-subgraph-details/01-schema-graphql.md)** : Description des entités et de leurs relations.
+  - **[Sources de Données](./docs/03-subgraph-details/02-data-sources.md)** : Configuration des contrats et événements écoutés.
+  - **[Logique des Mappings](./docs/03-subgraph-details/03-mappings/00-overview.md)** : **(Point de départ)** Explication détaillée de chaque fonction de mapping (handler).
+- **[🚀 4. Déploiement](./docs/04-deployment.md)** : Procédures de déploiement sur différents environnements.
+- **[❓ 5. Comment Interroger les Données](./docs/05-how-to-query.md)** : Exemples de requêtes GraphQL.
 
 ## Structure du Projet
 
@@ -82,9 +90,16 @@ Une vue d'ensemble de la structure des dossiers du projet [^1] :
 └── package.json       # Dépendances et scripts du projet
 ```
 
-## Contribuer
+## Directives de Développement
 
-Les contributions sont les bienvenues ! Veuillez consulter notre [guide de contribution](./docs/06-contributing.md) pour plus de détails sur le processus.
+Ce projet est développé en interne. Pour assurer la qualité et la cohérence du code, tous les développeurs travaillant sur ce subgraph sont priés de suivre les bonnes pratiques ci-dessous.
+
+- **Gestion des branches** : Tout développement doit se faire sur une branche dédiée (`feature/...`, `fix/...`). Ne jamais commit directement sur `main`.
+- **Tests** : Avant de soumettre une Pull Request, assurez-vous que le subgraph se déploie et s'indexe correctement en local.
+- **Documentation** : **Toute modification du code** (ajout d'un handler, modification d'une entité) **doit être accompagnée d'une mise à jour de la documentation** correspondante dans le dossier `/docs`.
+- **Pull Requests** : Décrivez clairement les changements effectués dans la description de la PR.
+
+Pour des directives plus détaillées, veuillez consulter le [**guide de contribution interne**](./docs/06-contributing.md).
 
 ## Licence
 
