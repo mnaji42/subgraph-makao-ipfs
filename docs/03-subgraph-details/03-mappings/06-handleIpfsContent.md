@@ -62,7 +62,7 @@ return
 
 ```
 
-- `json.try_fromBytes(data)`: Tente de parser les `Bytes` bruts en un objet JSON. Cette fonction **ne fait pas crasher le subgraph en cas d'échec**[^1]. Elle retourne un objet `JSONResult` qui contient soit les données, soit une erreur.
+- `json.try_fromBytes(data)`: Tente de parser les `Bytes` bruts en un objet JSON. Cette fonction **ne fait pas crasher le subgraph en cas d'échec**. Elle retourne un objet `JSONResult` qui contient soit les données, soit une erreur.
 - Si le parsing échoue, nous loguons un avertissement et sauvegardons une entité `MarketMetadata` vide. C'est une décision importante : cela empêche le Graph Node de tenter indéfiniment de retraiter un fichier qu'il sait corrompu.
 
 ### Étape 4 : Extraction Champ par Champ et Traitement des Données Nested
@@ -77,11 +77,11 @@ Cette règle n'est pas une simple convention, c'est une nécessité technique po
 
 ### Qu'est-ce qu'une Condition de Course ?
 
-Une condition de course se produit lorsque deux processus parallèles tentent d'accéder ou de modifier la même ressource (dans notre cas, une entité en base de données), et que le résultat de l'opération dépend de l'ordre, imprévisible, dans lequel les processus s'exécutent[^3].
+Une condition de course se produit lorsque deux processus parallèles tentent d'accéder ou de modifier la même ressource (dans notre cas, une entité en base de données), et que le résultat de l'opération dépend de l'ordre, imprévisible, dans lequel les processus s'exécutent.
 
 ### Le Scénario Catastrophe que nous Évitons :
 
-1.  Le handler `handleCreateInstance` est déclenché. Il prépare l'entité `Market` et, avant même de la sauvegarder, il déclenche le template IPFS `IpfsContentTemplate.createWithContext(...)`[^2].
+1.  Le handler `handleCreateInstance` est déclenché. Il prépare l'entité `Market` et, avant même de la sauvegarder, il déclenche le template IPFS `IpfsContentTemplate.createWithContext(...)`.
 2.  Le Graph Node traite les tâches de manière parallèle et optimisée. Il n'y a **aucune garantie** que le `market.save()` de `handleCreateInstance` sera terminé avant que `handleIpfsContent` ne commence son exécution.
 3.  **Le problème :** Si `handleIpfsContent` essayait de charger l'entité parente avec `Market.load(marketId)`, il risquerait de recevoir `null`, car l'entité n'a pas encore été écrite en base de données.
 4.  Toute tentative de modifier cette entité `null` (`market.isMetadataSynced = true`, par exemple) provoquerait une erreur fatale et **ferait crasher l'ensemble du subgraph**.

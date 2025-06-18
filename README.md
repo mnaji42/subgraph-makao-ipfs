@@ -75,6 +75,7 @@ La documentation technique complète est centralisée dans le dossier `/docs`. E
   - **[Logique des Mappings](./docs/03-subgraph-details/03-mappings/00-overview.md)** : **(Point de départ)** Explication détaillée de chaque fonction de mapping (handler).
 - **[🚀 4. Déploiement](./docs/04-deployment.md)** : Procédures de déploiement sur différents environnements.
 - **[❓ 5. Comment Interroger les Données](./docs/05-how-to-query.md)** : Exemples de requêtes GraphQL.
+- **[📝 6. Contribution](./docs/06-contributing.md)** : Guide des bonnes pratiques pour contribuer au projet.
 
 ## Structure du Projet
 
