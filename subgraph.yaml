@@ -1,8 +1,8 @@
 specVersion: 1.2.0 # La version compatible avec Alchemy
 
-features:
-  - ipfsOnEthereumContracts
-  - nonDeterministicIpfs
+# features:
+#   - ipfsOnEthereumContracts
+#   - nonDeterministicIpfs
 # - fullTextSearch permet de faire des recherches dans toute la base de donnée (une sorte de google)... tres utile pour la barre de recherche coté front => il faut ajouté dans schema.graphql une directive  @fulltext sur les champs qu'on veut rendre recherchable
 # - grafting A ajouter pour ne pas tout reindexer pour l'instant pas besoin (voir la partie graft)
 # - nonFatalErrors permet d'empecher le subgraph de crash en cas d'erreur dans une data (elle ignore juste le block en question)... Mais pas du tout recommendé
@@ -30,7 +30,6 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - Market
-        - MarketEvent
         - GlobalStat
       abis:
         - name: MakaoFactory
@@ -84,3 +83,5 @@ templates:
       handler: handleIpfsContent
       entities:
         - Market
+        - MarketMetadata
+        - MarketEvent
