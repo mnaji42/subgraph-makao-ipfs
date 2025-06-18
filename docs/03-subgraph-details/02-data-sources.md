@@ -8,12 +8,10 @@ Comprendre ce fichier, c'est comprendre le flux de données complet de notre sub
 
 Au début du fichier, plusieurs paramètres définissent le comportement global et les capacités de notre subgraph.
 
-```
-
+```yaml
 specVersion: 1.2.0
 indexerHints:
 prune: auto
-
 ```
 
 - **`specVersion: 1.2.0`**: Indique que notre subgraph est compatible avec des versions de nœuds modernes, comme celles utilisées par Alchemy, et nous donne accès à des fonctionnalités récentes.
@@ -27,11 +25,9 @@ prune: auto
 
 Cette section définit les contrats intelligents dont l'adresse est fixe et connue au moment du déploiement. Pour nous, il s'agit du contrat `MakaoFactory`. C'est le point d'entrée de notre écosystème.
 
-```
-
+```yaml
 dataSources:
-
-- kind: ethereum
+  - kind: ethereum
 name: MakaoFactory
 network: sepolia
 source:
@@ -43,10 +39,9 @@ mapping:
 # ...
 
 eventHandlers:
-- event: CreateInstance(indexed address)
+  - event: CreateInstance(indexed address)
 handler: handleCreateInstance
 file: ./src/makao-factory.ts
-
 ```
 
 | Paramètre                       | Description                                                                                                                                             |
@@ -68,8 +63,7 @@ Notre manifeste définit deux templates :
 
 Ce template est utilisé pour surveiller chaque marché individuel créé par la factory.
 
-```
-
+```yaml
 templates:
 
 - kind: ethereum
@@ -85,7 +79,6 @@ eventHandlers:
 - event: EngageChallenge(...)
 handler: handleEngageChallenge
 \# ... autres événements du marché
-
 ```
 
 - **La différence clé :** Notez l'absence d'une `source.address`. C'est normal, car nous ne connaissons pas encore l'adresse du marché qui sera créé.
@@ -95,11 +88,9 @@ handler: handleEngageChallenge
 
 Ce template est radicalement différent. Son but n'est pas de surveiller un contrat, mais de récupérer un fichier sur IPFS.
 
-```
-
+```yaml
 templates:
-
-- name: IpfsContent
+  - name: IpfsContent
 kind: file/ipfs
 mapping:
 apiVersion: 0.0.9
@@ -107,10 +98,9 @@ language: wasm/assemblyscript
 file: ./src/ipfs-handler.ts
 handler: handleIpfsContent
 entities:
-- Market
-- MarketMetadata
-- MarketEvent
-
+  - Market
+  - MarketMetadata
+  - MarketEvent
 ```
 
 - **`kind: file/ipfs`**: Indique que la source de données est un fichier IPFS, pas un contrat Ethereum.

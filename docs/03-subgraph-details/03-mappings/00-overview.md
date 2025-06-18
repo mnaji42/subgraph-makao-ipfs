@@ -39,21 +39,19 @@ Le choix de l'ID est crucial pour l'unicité et la performance. Notre stratégie
 
 Nous utilisons systématiquement le pattern `load-then-create` pour éviter de dupliquer des entités.
 
-```
-
+```typescript
 // Tenter de charger une entité existante
-let entity = Entity.load(id);
+let entity = Entity.load(id)
 
 // Si elle n'existe pas, la créer
 if (!entity) {
-entity = new Entity(id);
+  entity = new Entity(id)
 }
 
 // ... mettre à jour les champs de l'entité
 
 // Sauvegarder les changements
-entity.save();
-
+entity.save()
 ```
 
 ### 3. Séparation des Responsabilités (On-chain vs. Off-chain)
@@ -67,16 +65,16 @@ Comme détaillé dans le document d'architecture, nous séparons strictement le 
 
 Cliquez sur les liens ci-dessous pour une explication détaillée de chaque handler, incluant sa logique, les entités qu'il affecte et un extrait de son code.
 
-- **Handlers du `makao-factory.ts`**
+- **Handlers du `src/makao-factory.ts`**
 
   - **[`handleCreateInstance`](./01-handleCreateInstance.md)** : Déclenché à la création d'un nouveau marché. Crée l'entité `Market` et active les templates.
 
-- **Handlers du `market.ts`**
+- **Handlers du `src/market.ts`**
 
   - **[`handleEngageChallenge`](./02-handleEngageChallenge.md)** : Déclenché lorsqu'un utilisateur participe à un marché.
   - **[`handleEventCancelled`](./03-handleEventCancelled.md)** : Déclenché lorsqu'un marché est annulé.
   - **[`handleExitEvent`](./04-handleExitEvent.md)** : Déclenché lorsqu'un utilisateur se retire d'un marché.
   - **[`handleResolveEvent`](./05-handleResolveEvent.md)** : Déclenché à la résolution d'un marché.
 
-- **Handlers du `ipfs-handler.ts`**
+- **Handlers du `src/ipfs-handler.ts`**
   - **[`handleIpfsContent`](./06-handleIpfsContent.md)** : Déclenché de manière asynchrone après la récupération d'un fichier sur IPFS.

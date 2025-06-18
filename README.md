@@ -37,29 +37,29 @@ Assurez-vous d'avoir les outils suivants installés :
 
 1. **Cloner le dépôt :**
 
-```bash
-git clone https://github.com/mnaji42/subgraph-makao-ipfs.git
-cd subgraph-makao-ipfs
-```
+   ```bash
+   git clone https://github.com/mnaji42/subgraph-makao-ipfs.git
+   cd subgraph-makao-ipfs
+   ```
 
 2. **Installer les dépendances :**
 
-```bash
-npm install
-```
+   ```bash
+   npm install
+   ```
 
 3. **Lancer l'environnement local (dans un premier terminal) :**
 
-```bash
-docker compose up
-```
+   ```bash
+   docker compose up
+   ```
 
 4. **Créer et déployer le subgraph localement (dans un second terminal) :**
 
-```bash
-npm run create-local
-npm run deploy-local
-```
+   ```bash
+   npm run create-local
+   npm run deploy-local
+   ```
 
 Pour des instructions détaillées, consultez le [guide de déploiement complet](./docs/04-deployment.md).
 
@@ -95,9 +95,9 @@ La documentation technique complète est centralisée dans le dossier `/docs`. E
 Ce projet est développé en interne. Pour assurer la qualité et la cohérence du code, tous les développeurs travaillant sur ce subgraph sont priés de suivre les bonnes pratiques ci-dessous.
 
 - **Gestion des branches** : Tout développement doit se faire sur une branche dédiée (`feature/...`, `fix/...`). Ne jamais commit directement sur `main`.
-- **Tests** : Avant de soumettre une Pull Request, assurez-vous que le subgraph se déploie et s'indexe correctement en local.
+- **Tests** : Avant de soumettre une `Pull Request`, assurez-vous que le subgraph se déploie et s'indexe correctement en local.
 - **Documentation** : **Toute modification du code** (ajout d'un handler, modification d'une entité) **doit être accompagnée d'une mise à jour de la documentation** correspondante dans le dossier `/docs`.
-- **Pull Requests** : Décrivez clairement les changements effectués dans la description de la PR.
+- **Pull Requests** : Décrivez clairement les changements effectués dans la description de la `PR`.
 
 Pour des directives plus détaillées, veuillez consulter le [**guide de contribution interne**](./docs/06-contributing.md).
 

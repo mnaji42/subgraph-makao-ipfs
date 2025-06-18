@@ -22,12 +22,10 @@ Pour cette raison, ce handler est conçu pour être extrêmement **robuste et d�
 
 La première action du handler est de retrouver à quel marché il doit associer ces métadonnées. C'est ici que le `contexte`, passé par `handleCreateInstance`, entre en jeu.
 
-```
-
+```typescript
 // Fichier: src/ipfs-handler.ts
 let context = dataSource.context()
 let marketId = context.getString("marketId")
-
 ```
 
 - `dataSource.context()`: Récupère le conteneur de données qui a été passé lors de la création du template.
@@ -37,29 +35,25 @@ let marketId = context.getString("marketId")
 
 Nous créons immédiatement l'entité "enfant" `MarketMetadata`. Son ID est l'ID du marché (`marketId`), ce qui garantit une relation 1-à-1 unique avec son parent.
 
-```
-
+```typescript
 // Fichier: src/ipfs-handler.ts
 let metadata = new MarketMetadata(marketId)
 metadata.market = marketId // Établit le lien vers le parent
-
 ```
 
 ### Étape 3 : Parsing Sécurisé du JSON
 
 C'est l'étape la plus critique. Nous ne faisons jamais l'hypothèse que les données sont valides.
 
-```
-
+```typescript
 // Fichier: src/ipfs-handler.ts
 let jsonResult = json.try_fromBytes(data)
 
 if (jsonResult.isError) {
-log.warning("Erreur de parsing JSON pour le marché {}", [marketId])
-metadata.save() // On sauvegarde une entité vide pour ne pas retenter
-return
+  log.warning("Erreur de parsing JSON pour le marché {}", [marketId])
+  metadata.save() // On sauvegarde une entité vide pour ne pas retenter
+  return
 }
-
 ```
 
 - `json.try_fromBytes(data)`: Tente de parser les `Bytes` bruts en un objet JSON. Cette fonction **ne fait pas crasher le subgraph en cas d'échec**. Elle retourne un objet `JSONResult` qui contient soit les données, soit une erreur.

@@ -41,8 +41,7 @@ Ce fichier est le cerveau de votre subgraph. Chaque paramètre doit correspondre
 
 Ces commandes permettent de s'assurer que le projet est propre et qu'il compile sans erreur avant toute tentative de déploiement.
 
-```
-
+```bash
 
 # 1. Nettoyer les anciens artefacts de build
 
@@ -64,14 +63,12 @@ npm run build
 
 Une fois le subgraph compilé, il peut être déployé sur le service de votre choix (Subgraph Studio, Chainstack, Zeeve, etc.). La commande générale est la suivante :
 
-```
-
+```bash
 graph deploy <NOM_DU_SUBGRAPH> \
 --node <URL_DU_NOEUD_DE_DEPLOIEMENT> \
 --ipfs <URL_DU_GATEWAY_IPFS> \
 --deploy-key <VOTRE_CLE_DE_DEPLOIEMENT> \
 --version-label <ETIQUETTE_DE_VERSION>
-
 ```
 
 - `<NOM_DU_SUBGRAPH>`: Le nom de votre subgraph (souvent au format `organisation/nom`).
@@ -90,7 +87,7 @@ Pour éviter de modifier manuellement `subgraph.yaml` à chaque fois, `graph-cli
 
 1.  **Créez un fichier `networks.json`** à la racine de votre projet :
 
-    ```
+    ```json
     {
       "sepolia": {
         "MakaoFactory": {
@@ -129,7 +126,7 @@ Si une version déployée échoue après avoir indexé des millions de blocs, to
 
 1.  **Identifiez le bloc** avant l'erreur dans le subgraph défaillant.
 2.  **Ajoutez une section `graft`** dans votre `subgraph.yaml` corrigé :
-    ```
+    ```yaml
     features:
       - grafting
     graft:

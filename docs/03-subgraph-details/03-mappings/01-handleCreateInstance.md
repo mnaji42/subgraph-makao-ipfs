@@ -43,21 +43,19 @@ Voici la décomposition de la logique du code dans `handleCreateInstance`.
 
 Le handler commence par créer une nouvelle entité `Market`. Il s'agit du "squelette" de notre marché, rempli uniquement avec les données immédiatement disponibles et fiables de l'événement (`event.params`, `event.transaction`, `event.block`).
 
-```
-
+```typescript
 // Fichier: src/makao-factory.ts
-let marketId = event.params.instance.toHexString();
-let market = new Market(marketId);
+let marketId = event.params.instance.toHexString()
+let market = new Market(marketId)
 
-market.contractAddress = event.params.instance;
-market.creator = event.transaction.from;
-market.createdAt = event.block.timestamp;
+market.contractAddress = event.params.instance
+market.creator = event.transaction.from
+market.createdAt = event.block.timestamp
 
 // Initialisation des valeurs par défaut
-market.totalAmount = BigInt.fromI32(0);
-market.isCancelled = false;
-market.isResolved = false;
-
+market.totalAmount = BigInt.fromI32(0)
+market.isCancelled = false
+market.isResolved = false
 ```
 
 ### Étape 2 : Lecture Sécurisée des Données Publiques du Contrat
@@ -70,22 +68,20 @@ Pour obtenir le reste des informations on-chain (comme `owner`, `stakeToken`, et
 
 C'est le cœur de notre architecture. Au lieu d'un appel bloquant à `ipfs.cat()`, nous déléguons la tâche au Graph Node.
 
-```
-
+```typescript
 // Fichier: src/makao-factory.ts
-let ipfsHashResult = contract.try_ipfsMetadataHash();
+let ipfsHashResult = contract.try_ipfsMetadataHash()
 if (!ipfsHashResult.reverted) {
-let ipfsHash = ipfsHashResult.value;
-market.ipfsHash = ipfsHash;
+  let ipfsHash = ipfsHashResult.value
+  market.ipfsHash = ipfsHash
 
-    // 1. Créer un "contexte" pour passer l'ID du marché parent
-    let context = new DataSourceContext();
-    context.setString("marketId", marketId);
+  // 1. Créer un "contexte" pour passer l'ID du marché parent
+  let context = new DataSourceContext()
+  context.setString("marketId", marketId)
 
-    // 2. Déclencher le template avec ce contexte
-    IpfsContentTemplate.createWithContext(ipfsHash, context);
-    }
-
+  // 2. Déclencher le template avec ce contexte
+  IpfsContentTemplate.createWithContext(ipfsHash, context)
+}
 ```
 
 - **`IpfsContentTemplate.createWithContext(ipfsHash, context)`** est une instruction non bloquante. Elle dit au Graph Node :
@@ -97,13 +93,11 @@ market.ipfsHash = ipfsHash;
 
 Pour finir, nous sauvegardons notre entité `Market` et activons le template pour que le subgraph commence à écouter les événements sur ce nouveau contrat de marché.
 
-```
-
+```typescript
 // Fichier: src/makao-factory.ts
-market.save();
-updateGlobalStats(true, event.block.timestamp); // Met à jour les statistiques globales
-MakaoFixtureTemplate.create(event.params.instance); // Démarre la surveillance de ce marché
-
+market.save()
+updateGlobalStats(true, event.block.timestamp) // Met à jour les statistiques globales
+MakaoFixtureTemplate.create(event.params.instance) // Démarre la surveillance de ce marché
 ```
 
 ## Entités Affectées
